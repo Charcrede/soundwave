@@ -86,88 +86,101 @@ export default function HomePage() {
           flex-direction: column;
         }
 
-        /* NAV */
+        /* ── NAV ── */
         .sw-nav {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 20px 40px;
+          padding: 16px 20px;
           border-bottom: 1px solid rgba(255,255,255,0.06);
         }
+        @media (min-width: 640px) {
+          .sw-nav { padding: 20px 40px; }
+        }
+
         .sw-logo {
-          font-size: 22px;
+          font-size: 18px;
           font-weight: 800;
           letter-spacing: -0.02em;
           color: #ffffff;
         }
-        .sw-logo span {
-          color: #1877f2;
+        @media (min-width: 640px) {
+          .sw-logo { font-size: 22px; }
         }
+        .sw-logo span { color: #1877f2; }
         .sw-logo-underscore {
           display: block;
-          width: 28px;
+          width: 24px;
           height: 3px;
           background: #1877f2;
           margin-top: 2px;
           border-radius: 2px;
         }
-        .sw-nav-right {
+
+        .sw-lang {
           display: flex;
-          align-items: center;
-          gap: 8px;
+          gap: 4px;
         }
         .sw-lang-btn {
-          padding: 6px 12px;
+          padding: 5px 9px;
           border-radius: 4px;
           border: 1px solid rgba(255,255,255,0.12);
           background: transparent;
           font-family: 'Poppins', sans-serif;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 600;
           color: rgba(255,255,255,0.5);
           cursor: pointer;
           letter-spacing: 0.06em;
           transition: all 0.15s;
         }
-        .sw-lang-btn:hover {
-          color: #fff;
-          border-color: rgba(255,255,255,0.3);
+        @media (min-width: 640px) {
+          .sw-lang-btn { padding: 6px 12px; font-size: 12px; }
         }
-        .sw-lang-btn.active {
-          background: #1877f2;
-          border-color: #1877f2;
-          color: #fff;
-        }
+        .sw-lang-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+        .sw-lang-btn.active { background: #1877f2; border-color: #1877f2; color: #fff; }
 
-        /* MAIN */
+        /* ── MAIN ── */
         .sw-main {
           flex: 1;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 80px 24px 60px;
+          padding: 48px 16px 48px;
+        }
+        @media (min-width: 640px) {
+          .sw-main { padding: 80px 24px 60px; }
         }
 
-        /* HERO */
+        /* ── HERO ── */
         .sw-hero {
           text-align: center;
+          width: 100%;
           max-width: 600px;
-          margin-bottom: 48px;
+          margin-bottom: 32px;
         }
+        @media (min-width: 640px) {
+          .sw-hero { margin-bottom: 48px; }
+        }
+
         .sw-hero-label {
           display: inline-block;
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 700;
-          letter-spacing: 0.18em;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
           color: #fff;
           background: #1877f2;
-          padding: 5px 14px;
+          padding: 4px 12px;
           border-radius: 2px;
-          margin-bottom: 24px;
+          margin-bottom: 18px;
         }
+        @media (min-width: 640px) {
+          .sw-hero-label { font-size: 11px; padding: 5px 14px; margin-bottom: 24px; }
+        }
+
         .sw-h1 {
-          font-size: clamp(36px, 5.5vw, 62px);
+          font-size: clamp(28px, 7vw, 62px);
           font-weight: 800;
           letter-spacing: -0.03em;
           line-height: 1.05;
@@ -179,57 +192,71 @@ export default function HomePage() {
           display: block;
         }
         .sw-sub {
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 400;
           color: rgba(255,255,255,0.45);
           line-height: 1.75;
-          margin-top: 18px;
-          max-width: 420px;
+          margin-top: 14px;
+          max-width: 380px;
           margin-left: auto;
           margin-right: auto;
         }
+        @media (min-width: 640px) {
+          .sw-sub { font-size: 14px; margin-top: 18px; max-width: 420px; }
+        }
 
-        /* SEARCH */
+        /* ── SEARCH ── */
         .sw-search-wrap {
           width: 100%;
           max-width: 560px;
-          margin-bottom: 40px;
+          margin-bottom: 28px;
         }
+        @media (min-width: 640px) {
+          .sw-search-wrap { margin-bottom: 40px; }
+        }
+
         .sw-search-box {
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 6px 6px 6px 18px;
+          gap: 8px;
+          padding: 6px 6px 6px 14px;
           background: #111827;
           border: 1px solid rgba(255,255,255,0.1);
           border-radius: 6px;
           transition: border-color 0.2s;
         }
-        .sw-search-box:focus-within {
-          border-color: #1877f2;
-        }
+        .sw-search-box:focus-within { border-color: #1877f2; }
+
         .sw-search-icon { color: rgba(255,255,255,0.2); flex-shrink: 0; }
+
         .sw-input {
           flex: 1;
+          min-width: 0;
           background: transparent;
           border: none;
           outline: none;
           font-family: 'Poppins', sans-serif;
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 400;
           color: #ffffff;
           caret-color: #1877f2;
         }
+        @media (min-width: 640px) {
+          .sw-input { font-size: 14px; }
+        }
         .sw-input::placeholder { color: rgba(255,255,255,0.2); }
+
         .sw-search-btn {
           display: flex;
           align-items: center;
-          gap: 8px;
+          justify-content: center;
+          gap: 6px;
           font-family: 'Poppins', sans-serif;
           font-size: 13px;
           font-weight: 700;
           letter-spacing: 0.04em;
-          padding: 11px 22px;
+          /* Mobile : juste une icône carrée */
+          padding: 10px 12px;
           border-radius: 4px;
           border: none;
           background: #1877f2;
@@ -239,59 +266,72 @@ export default function HomePage() {
           flex-shrink: 0;
           transition: background 0.15s, transform 0.1s;
         }
+        @media (min-width: 480px) {
+          .sw-search-btn { padding: 11px 22px; }
+        }
         .sw-search-btn:hover { background: #1565d8; }
         .sw-search-btn:active { transform: scale(0.98); }
         .sw-search-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
 
-        /* FEATURES */
+        .sw-btn-label {
+          display: none;
+        }
+        @media (min-width: 480px) {
+          .sw-btn-label { display: inline; }
+        }
+
+        /* ── FEATURES ── */
         .sw-features {
           width: 100%;
           max-width: 560px;
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
+          grid-template-columns: 1fr;
+          gap: 10px;
         }
+        @media (min-width: 480px) {
+          .sw-features { grid-template-columns: repeat(3, 1fr); }
+        }
+
         .sw-feat {
-          padding: 20px 18px;
+          padding: 16px;
           background: #111827;
           border: 1px solid rgba(255,255,255,0.06);
           border-radius: 6px;
           border-left: 3px solid #1877f2;
-          transition: border-color 0.15s;
+          transition: background 0.15s;
         }
-        .sw-feat:hover { border-left-color: #1877f2; background: #141d2e; }
-        .sw-feat-icon { color: #1877f2; margin-bottom: 12px; }
+        .sw-feat:hover { background: #141d2e; }
+        .sw-feat-icon { color: #1877f2; margin-bottom: 10px; }
         .sw-feat-title {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 700;
           color: #ffffff;
-          margin-bottom: 5px;
-          letter-spacing: -0.01em;
+          margin-bottom: 4px;
         }
         .sw-feat-desc {
           font-size: 11px;
           font-weight: 400;
           color: rgba(255,255,255,0.35);
-          line-height: 1.65;
+          line-height: 1.6;
         }
 
-        /* RESULTS */
+        /* ── RESULTS ── */
         .sw-results {
           width: 100%;
           max-width: 560px;
         }
         .sw-results-count {
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 600;
           letter-spacing: 0.1em;
           text-transform: uppercase;
           color: rgba(255,255,255,0.25);
-          margin-bottom: 12px;
+          margin-bottom: 10px;
         }
 
         /* SKELETON */
         .sw-skeleton {
-          height: 72px;
+          height: 70px;
           border-radius: 6px;
           background: #111827;
           border: 1px solid rgba(255,255,255,0.06);
@@ -316,8 +356,8 @@ export default function HomePage() {
         .sw-card {
           display: flex;
           align-items: center;
-          gap: 14px;
-          padding: 10px 14px;
+          gap: 10px;
+          padding: 8px 10px;
           background: #111827;
           border: 1px solid rgba(255,255,255,0.06);
           border-radius: 6px;
@@ -325,10 +365,10 @@ export default function HomePage() {
           transition: border-color 0.15s, background 0.15s;
           animation: sw-in 0.25s ease both;
         }
-        .sw-card:hover {
-          border-color: rgba(24,119,242,0.3);
-          background: #141d2e;
+        @media (min-width: 480px) {
+          .sw-card { gap: 14px; padding: 10px 14px; }
         }
+        .sw-card:hover { border-color: rgba(24,119,242,0.3); background: #141d2e; }
         @keyframes sw-in {
           from { opacity: 0; transform: translateY(6px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -336,27 +376,38 @@ export default function HomePage() {
 
         .sw-thumb {
           position: relative;
-          width: 70px; height: 50px;
+          /* Plus petit sur mobile */
+          width: 52px;
+          height: 38px;
           border-radius: 4px;
           overflow: hidden;
           flex-shrink: 0;
           background: #1a2234;
         }
+        @media (min-width: 480px) {
+          .sw-thumb { width: 70px; height: 50px; }
+        }
+
         .sw-thumb-duration {
           position: absolute;
-          bottom: 3px; right: 3px;
-          font-size: 9px;
+          bottom: 2px; right: 2px;
+          font-size: 8px;
           font-weight: 600;
           color: #fff;
           background: rgba(0,0,0,0.8);
-          padding: 1px 5px;
+          padding: 1px 4px;
           border-radius: 2px;
-          letter-spacing: 0.02em;
+        }
+        @media (min-width: 480px) {
+          .sw-thumb-duration { font-size: 9px; bottom: 3px; right: 3px; }
         }
 
-        .sw-card-info { flex: 1; min-width: 0; }
+        .sw-card-info {
+          flex: 1;
+          min-width: 0;
+        }
         .sw-card-title {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 600;
           color: #ffffff;
           white-space: nowrap;
@@ -364,25 +415,32 @@ export default function HomePage() {
           text-overflow: ellipsis;
           letter-spacing: -0.01em;
         }
+        @media (min-width: 480px) {
+          .sw-card-title { font-size: 13px; }
+        }
         .sw-card-channel {
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 400;
           color: rgba(255,255,255,0.3);
-          margin-top: 3px;
+          margin-top: 2px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+        @media (min-width: 480px) {
+          .sw-card-channel { font-size: 11px; margin-top: 3px; }
         }
 
         .sw-dl-btn {
           display: flex;
           align-items: center;
-          gap: 6px;
+          justify-content: center;
+          gap: 5px;
           font-family: 'Poppins', sans-serif;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 700;
-          letter-spacing: 0.03em;
-          padding: 7px 14px;
+          /* Mobile : carré icône seule */
+          padding: 7px 10px;
           border-radius: 4px;
           border: 1px solid rgba(24,119,242,0.3);
           background: rgba(24,119,242,0.08);
@@ -392,34 +450,43 @@ export default function HomePage() {
           flex-shrink: 0;
           transition: all 0.15s;
         }
-        .sw-dl-btn:hover {
-          background: #1877f2;
-          border-color: #1877f2;
-          color: #fff;
+        @media (min-width: 480px) {
+          .sw-dl-btn { padding: 7px 14px; font-size: 12px; }
         }
+        .sw-dl-btn:hover { background: #1877f2; border-color: #1877f2; color: #fff; }
         .sw-dl-btn:disabled { opacity: 0.35; cursor: default; }
+
+        .sw-dl-label {
+          display: none;
+        }
+        @media (min-width: 480px) {
+          .sw-dl-label { display: inline; }
+        }
 
         .sw-spin { animation: sw-spin 0.7s linear infinite; display: flex; }
         @keyframes sw-spin { to { transform: rotate(360deg); } }
 
         .sw-no-results {
           text-align: center;
-          padding: 60px 0;
+          padding: 48px 0;
           font-size: 13px;
           font-weight: 400;
           color: rgba(255,255,255,0.2);
         }
 
-        /* FOOTER */
+        /* ── FOOTER ── */
         .sw-footer {
-          padding: 20px 40px;
+          padding: 16px 20px;
           border-top: 1px solid rgba(255,255,255,0.06);
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 600;
           letter-spacing: 0.06em;
           text-transform: uppercase;
           color: rgba(255,255,255,0.15);
           text-align: center;
+        }
+        @media (min-width: 640px) {
+          .sw-footer { padding: 20px 40px; font-size: 11px; }
         }
       `}</style>
 
@@ -428,12 +495,10 @@ export default function HomePage() {
         {/* NAV */}
         <nav className="sw-nav">
           <div>
-            <div className="sw-logo">
-              Sound<span>Wave</span>
-            </div>
+            <div className="sw-logo">Sound<span>Wave</span></div>
             <span className="sw-logo-underscore" />
           </div>
-          <div className="sw-nav-right">
+          <div className="sw-lang">
             {LOCALES.map((l) => {
               const isActive = typeof window !== 'undefined' && window.location.pathname.startsWith(`/${l.code}`);
               return (
@@ -482,7 +547,10 @@ export default function HomePage() {
               >
                 {loading
                   ? <span className="sw-spin"><Loader2 size={14} /></span>
-                  : <><Search size={14} /><span className='md:block hidden'>{t('hero.button')}</span></>
+                  : <>
+                      <Search size={14} />
+                      <span className="sw-btn-label">{t('hero.button')}</span>
+                    </>
                 }
               </button>
             </div>
@@ -492,17 +560,17 @@ export default function HomePage() {
           {!searched ? (
             <div className="sw-features">
               <div className="sw-feat">
-                <Zap className="sw-feat-icon" size={16} />
+                <Zap className="sw-feat-icon" size={15} />
                 <div className="sw-feat-title">{t('features.instantTitle')}</div>
                 <div className="sw-feat-desc">{t('features.instantDesc')}</div>
               </div>
               <div className="sw-feat">
-                <Music2 className="sw-feat-icon" size={16} />
+                <Music2 className="sw-feat-icon" size={15} />
                 <div className="sw-feat-title">{t('features.qualityTitle')}</div>
                 <div className="sw-feat-desc">{t('features.qualityDesc')}</div>
               </div>
               <div className="sw-feat">
-                <Globe className="sw-feat-icon" size={16} />
+                <Globe className="sw-feat-icon" size={15} />
                 <div className="sw-feat-title">{t('features.multiTitle')}</div>
                 <div className="sw-feat-desc">{t('features.multiDesc')}</div>
               </div>
@@ -537,7 +605,10 @@ export default function HomePage() {
                       >
                         {downloadingId === r.id
                           ? <span className="sw-spin"><Loader2 size={13} /></span>
-                          : <><Download size={13} />{t('results.download')}</>
+                          : <>
+                              <Download size={13} />
+                              <span className="sw-dl-label">{t('results.download')}</span>
+                            </>
                         }
                       </button>
                     </div>
