@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "titleLine1": "Ta musique,",
+    "titleLine2": "comme tu veux.",
+    "subtitle": "Recherche n'importe quel titre. Télécharge-le en MP3 en quelques secondes. Sans pub, sans compte.",
+    "placeholder": "Rechercher un titre, artiste ou album...",
+    "button": "Rechercher"
+  },
+  "nav": {
+    "search": "Rechercher"
+  },
+  "results": {
+    "title": "Résultats",
+    "download": "MP3",
+    "downloading": "Téléchargement...",
+    "noResults": "Aucun résultat. Essaie une autre recherche.",
+    "by": "par"
+  },
+  "features": {
+    "instantTitle": "Instantané",
+    "instantDesc": "Résultats en moins d'une seconde. Le téléchargement démarre immédiatement.",
+    "qualityTitle": "Haute qualité",
+    "qualityDesc": "Meilleure qualité audio disponible extraite automatiquement.",
+    "multiTitle": "Multilingue",
+    "multiDesc": "Anglais, français et allemand. D'autres langues arrivent bientôt."
+  },
+  "footer": {
+    "text": "À usage personnel uniquement"
+  }
+}

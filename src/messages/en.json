@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "titleLine1": "Your music,",
+    "titleLine2": "your way.",
+    "subtitle": "Search any track. Download it as crystal-clear MP3 in seconds. No ads, no account needed.",
+    "placeholder": "Search for a song, artist or album...",
+    "button": "Search"
+  },
+  "nav": {
+    "search": "Search"
+  },
+  "results": {
+    "title": "Results",
+    "download": "MP3",
+    "downloading": "Downloading...",
+    "noResults": "No results found. Try a different search.",
+    "by": "by"
+  },
+  "features": {
+    "instantTitle": "Instant",
+    "instantDesc": "Results in under a second. Download starts immediately.",
+    "qualityTitle": "High quality",
+    "qualityDesc": "Best available audio quality extracted automatically.",
+    "multiTitle": "Multilingual",
+    "multiDesc": "English, French and German. More coming soon."
+  },
+  "footer": {
+    "text": "For personal use only"
+  }
+}

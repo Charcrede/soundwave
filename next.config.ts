@@ -1,7 +1,18 @@
-import type { NextConfig } from "next";
+const createNextIntlPlugin = require('next-intl/plugin');
 
-const nextConfig: NextConfig = {
-  /* config options here */
+// Pointe vers le nouveau fichier i18n/request.ts
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = withNextIntl(nextConfig);

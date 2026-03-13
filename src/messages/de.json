@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "titleLine1": "Deine Musik,",
+    "titleLine2": "dein Weg.",
+    "subtitle": "Suche jeden Track. Lade ihn in Sekunden als kristallklares MP3 herunter. Ohne Werbung, ohne Account.",
+    "placeholder": "Song, Künstler oder Album suchen...",
+    "button": "Suchen"
+  },
+  "nav": {
+    "search": "Suchen"
+  },
+  "results": {
+    "title": "Ergebnisse",
+    "download": "MP3",
+    "downloading": "Wird geladen...",
+    "noResults": "Keine Ergebnisse. Versuche eine andere Suche.",
+    "by": "von"
+  },
+  "features": {
+    "instantTitle": "Sofort",
+    "instantDesc": "Ergebnisse in unter einer Sekunde. Download startet sofort.",
+    "qualityTitle": "Hohe Qualität",
+    "qualityDesc": "Beste verfügbare Audioqualität automatisch extrahiert.",
+    "multiTitle": "Mehrsprachig",
+    "multiDesc": "Englisch, Französisch und Deutsch. Mehr folgt bald."
+  },
+  "footer": {
+    "text": "Nur für den persönlichen Gebrauch"
+  }
+}
