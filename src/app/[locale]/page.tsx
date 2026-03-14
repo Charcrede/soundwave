@@ -27,7 +27,6 @@ export default function HomePage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
-  // Map videoId -> état du téléchargement
   const [downloadStates, setDownloadStates] = useState<Record<string, 'idle' | 'pending' | 'error'>>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,27 +49,25 @@ export default function HomePage() {
     setDownloadStates((prev) => ({ ...prev, [videoId]: 'pending' }));
 
     try {
-      // Étape 1 : démarre le job côté back
-      const startRes = await fetch(`${API_URL}/youtube/download/start/${videoId}`);
-      if (!startRes.ok) throw new Error('Start failed');
-      const { jobId } = await startRes.json();
+      // Étape 1 : demande l'URL directe du stream audio au back
+      const res = await fetch(`${API_URL}/youtube/audio-url/${videoId}`);
+      if (!res.ok) throw new Error('Failed to get audio URL');
+      const { url, ext } = await res.json();
 
-      // Étape 2 : poll toutes les 2 secondes jusqu'à ce que ce soit prêt
-      await pollUntilReady(jobId);
+      // Étape 2 : le navigateur télécharge directement depuis YouTube
+      // On fetch le stream depuis le navigateur (IP de l'utilisateur)
+      const audioRes = await fetch(url);
+      if (!audioRes.ok) throw new Error('Failed to fetch audio stream');
 
-      // Étape 3 : télécharge le fichier
-      const fileRes = await fetch(`${API_URL}/youtube/download/file/${jobId}`);
-      if (!fileRes.ok) throw new Error('File fetch failed');
-
-      const blob = await fileRes.blob();
-      const url = window.URL.createObjectURL(blob);
+      const blob = await audioRes.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `${title}.mp3`;
+      a.href = blobUrl;
+      a.download = `${title}.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(blobUrl);
 
       setDownloadStates((prev) => ({ ...prev, [videoId]: 'idle' }));
     } catch {
@@ -79,34 +76,6 @@ export default function HomePage() {
         setDownloadStates((prev) => ({ ...prev, [videoId]: 'idle' }));
       }, 3000);
     }
-  };
-
-  const pollUntilReady = (jobId: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      const interval = setInterval(async () => {
-        try {
-          const res = await fetch(`${API_URL}/youtube/download/status/${jobId}`);
-          if (!res.ok) {
-            clearInterval(interval);
-            reject(new Error('Status check failed'));
-            return;
-          }
-          const { status, error } = await res.json();
-
-          if (status === 'done') {
-            clearInterval(interval);
-            resolve();
-          } else if (status === 'error') {
-            clearInterval(interval);
-            reject(new Error(error || 'Download error'));
-          }
-          // si 'pending' → on continue à poll
-        } catch {
-          clearInterval(interval);
-          reject(new Error('Polling failed'));
-        }
-      }, 2000); // poll toutes les 2s
-    });
   };
 
   const switchLocale = (code: string) => {
@@ -327,7 +296,6 @@ export default function HomePage() {
           font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.2);
         }
 
-        /* ── FOOTER ── */
         .sw-footer {
           padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.06);
           font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
@@ -338,7 +306,6 @@ export default function HomePage() {
 
       <div className="sw">
 
-        {/* NAV */}
         <nav className="sw-nav">
           <div>
             <div className="sw-logo">Sound<span>Wave</span></div>
@@ -360,10 +327,8 @@ export default function HomePage() {
           </div>
         </nav>
 
-        {/* MAIN */}
         <main className="sw-main">
 
-          {/* HERO */}
           <div className="sw-hero">
             <span className="sw-hero-label">YouTube → MP3</span>
             <h1 className="sw-h1">
@@ -373,7 +338,6 @@ export default function HomePage() {
             <p className="sw-sub">{t('hero.subtitle')}</p>
           </div>
 
-          {/* SEARCH */}
           <div className="sw-search-wrap">
             <div className="sw-search-box">
               <Search className="sw-search-icon" size={15} />
@@ -399,7 +363,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* FEATURES or RESULTS */}
           {!searched ? (
             <div className="sw-features">
               <div className="sw-feat">
