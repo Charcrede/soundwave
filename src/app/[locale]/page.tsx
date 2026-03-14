@@ -21,55 +21,6 @@ const LOCALES = [
   { code: 'de', label: 'DE' },
 ];
 
-// Récupère l'URL du stream audio directement depuis l'API interne YouTube
-// Tout se passe dans le navigateur de l'utilisateur — zéro serveur impliqué
-async function getYoutubeAudioUrl(videoId: string): Promise<{ url: string; mimeType: string }> {
-  const response = await fetch('https://www.youtube.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-YouTube-Client-Name': '3',
-      'X-YouTube-Client-Version': '19.09.3',
-    },
-    body: JSON.stringify({
-      videoId,
-      context: {
-        client: {
-          clientName: 'ANDROID',
-          clientVersion: '19.09.3',
-          androidSdkVersion: 30,
-          userAgent: 'com.google.android.youtube/19.09.3 (Linux; U; Android 11) gzip',
-          hl: 'en',
-          timeZone: 'UTC',
-          utcOffsetMinutes: 0,
-        },
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`YouTube API error: ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  // Récupère les formats audio uniquement
-  const formats: any[] = data?.streamingData?.adaptiveFormats || [];
-  const audioFormats = formats
-    .filter((f: any) => f.mimeType?.startsWith('audio/'))
-    .sort((a: any, b: any) => (b.bitrate || 0) - (a.bitrate || 0));
-
-  if (!audioFormats.length) {
-    throw new Error('No audio formats found');
-  }
-
-  const best = audioFormats[0];
-  return {
-    url: best.url,
-    mimeType: best.mimeType.split(';')[0], // ex: "audio/webm"
-  };
-}
-
 export default function HomePage() {
   const t = useTranslations();
   const [query, setQuery] = useState('');
@@ -97,24 +48,19 @@ export default function HomePage() {
   const handleDownload = async (videoId: string, title: string) => {
     setDownloadStates((prev) => ({ ...prev, [videoId]: 'pending' }));
     try {
-      // 100% côté navigateur — l'IP de l'utilisateur fait la requête à YouTube
-      const { url, mimeType } = await getYoutubeAudioUrl(videoId);
+      // Étape 1 : back demande l'URL à Cobalt
+      const res = await fetch(`${API_URL}/youtube/download-url/${videoId}`);
+      if (!res.ok) throw new Error('Failed to get download URL');
+      const { url, filename } = await res.json();
 
-      const ext = mimeType === 'audio/mp4' ? 'm4a' : 'webm';
-
-      // Télécharge le stream audio
-      const audioRes = await fetch(url);
-      if (!audioRes.ok) throw new Error('Stream fetch failed');
-
-      const blob = await audioRes.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
+      // Étape 2 : le navigateur télécharge directement depuis l'URL Cobalt
       const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = `${title}.${ext}`;
+      a.href = url;
+      a.download = filename || `${title}.mp3`;
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       a.remove();
-      window.URL.revokeObjectURL(blobUrl);
 
       setDownloadStates((prev) => ({ ...prev, [videoId]: 'idle' }));
     } catch {
@@ -138,11 +84,8 @@ export default function HomePage() {
 
         .sw {
           font-family: 'Poppins', sans-serif;
-          background: #0a0f1e;
-          color: #ffffff;
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
+          background: #0a0f1e; color: #ffffff;
+          min-height: 100vh; display: flex; flex-direction: column;
         }
 
         .sw-nav {
@@ -193,7 +136,7 @@ export default function HomePage() {
         }
         .sw-h1-blue { color: #1877f2; display: block; }
         .sw-sub {
-          font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.45);
+          font-size: 13px; color: rgba(255,255,255,0.45);
           line-height: 1.75; margin-top: 14px;
           max-width: 380px; margin-left: auto; margin-right: auto;
         }
@@ -211,8 +154,7 @@ export default function HomePage() {
         .sw-search-icon { color: rgba(255,255,255,0.2); flex-shrink: 0; }
         .sw-input {
           flex: 1; min-width: 0; background: transparent; border: none; outline: none;
-          font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 400;
-          color: #fff; caret-color: #1877f2;
+          font-family: 'Poppins', sans-serif; font-size: 13px; color: #fff; caret-color: #1877f2;
         }
         @media (min-width: 640px) { .sw-input { font-size: 14px; } }
         .sw-input::placeholder { color: rgba(255,255,255,0.2); }
