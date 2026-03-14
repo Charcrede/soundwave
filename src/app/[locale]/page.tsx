@@ -21,6 +21,55 @@ const LOCALES = [
   { code: 'de', label: 'DE' },
 ];
 
+// Récupère l'URL du stream audio directement depuis l'API interne YouTube
+// Tout se passe dans le navigateur de l'utilisateur — zéro serveur impliqué
+async function getYoutubeAudioUrl(videoId: string): Promise<{ url: string; mimeType: string }> {
+  const response = await fetch('https://www.youtube.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-YouTube-Client-Name': '3',
+      'X-YouTube-Client-Version': '19.09.3',
+    },
+    body: JSON.stringify({
+      videoId,
+      context: {
+        client: {
+          clientName: 'ANDROID',
+          clientVersion: '19.09.3',
+          androidSdkVersion: 30,
+          userAgent: 'com.google.android.youtube/19.09.3 (Linux; U; Android 11) gzip',
+          hl: 'en',
+          timeZone: 'UTC',
+          utcOffsetMinutes: 0,
+        },
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`YouTube API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  // Récupère les formats audio uniquement
+  const formats: any[] = data?.streamingData?.adaptiveFormats || [];
+  const audioFormats = formats
+    .filter((f: any) => f.mimeType?.startsWith('audio/'))
+    .sort((a: any, b: any) => (b.bitrate || 0) - (a.bitrate || 0));
+
+  if (!audioFormats.length) {
+    throw new Error('No audio formats found');
+  }
+
+  const best = audioFormats[0];
+  return {
+    url: best.url,
+    mimeType: best.mimeType.split(';')[0], // ex: "audio/webm"
+  };
+}
+
 export default function HomePage() {
   const t = useTranslations();
   const [query, setQuery] = useState('');
@@ -47,17 +96,15 @@ export default function HomePage() {
 
   const handleDownload = async (videoId: string, title: string) => {
     setDownloadStates((prev) => ({ ...prev, [videoId]: 'pending' }));
-
     try {
-      // Étape 1 : demande l'URL directe du stream audio au back
-      const res = await fetch(`${API_URL}/youtube/audio-url/${videoId}`);
-      if (!res.ok) throw new Error('Failed to get audio URL');
-      const { url, ext } = await res.json();
+      // 100% côté navigateur — l'IP de l'utilisateur fait la requête à YouTube
+      const { url, mimeType } = await getYoutubeAudioUrl(videoId);
 
-      // Étape 2 : le navigateur télécharge directement depuis YouTube
-      // On fetch le stream depuis le navigateur (IP de l'utilisateur)
+      const ext = mimeType === 'audio/mp4' ? 'm4a' : 'webm';
+
+      // Télécharge le stream audio
       const audioRes = await fetch(url);
-      if (!audioRes.ok) throw new Error('Failed to fetch audio stream');
+      if (!audioRes.ok) throw new Error('Stream fetch failed');
 
       const blob = await audioRes.blob();
       const blobUrl = window.URL.createObjectURL(blob);
@@ -98,13 +145,9 @@ export default function HomePage() {
           flex-direction: column;
         }
 
-        /* ── NAV ── */
         .sw-nav {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 16px 20px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.06);
         }
         @media (min-width: 640px) { .sw-nav { padding: 20px 40px; } }
 
@@ -119,23 +162,20 @@ export default function HomePage() {
         .sw-lang { display: flex; gap: 4px; }
         .sw-lang-btn {
           padding: 5px 9px; border-radius: 4px;
-          border: 1px solid rgba(255,255,255,0.12);
-          background: transparent; font-family: 'Poppins', sans-serif;
-          font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
-          cursor: pointer; letter-spacing: 0.06em; transition: all 0.15s;
+          border: 1px solid rgba(255,255,255,0.12); background: transparent;
+          font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+          color: rgba(255,255,255,0.5); cursor: pointer; letter-spacing: 0.06em; transition: all 0.15s;
         }
         @media (min-width: 640px) { .sw-lang-btn { padding: 6px 12px; font-size: 12px; } }
         .sw-lang-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
         .sw-lang-btn.active { background: #1877f2; border-color: #1877f2; color: #fff; }
 
-        /* ── MAIN ── */
         .sw-main {
           flex: 1; display: flex; flex-direction: column;
           align-items: center; padding: 48px 16px;
         }
         @media (min-width: 640px) { .sw-main { padding: 80px 24px 60px; } }
 
-        /* ── HERO ── */
         .sw-hero { text-align: center; width: 100%; max-width: 600px; margin-bottom: 32px; }
         @media (min-width: 640px) { .sw-hero { margin-bottom: 48px; } }
 
@@ -149,7 +189,7 @@ export default function HomePage() {
 
         .sw-h1 {
           font-size: clamp(28px, 7vw, 62px); font-weight: 800;
-          letter-spacing: -0.03em; line-height: 1.05; color: #fff; margin-bottom: 8px;
+          letter-spacing: -0.03em; line-height: 1.05; color: #fff;
         }
         .sw-h1-blue { color: #1877f2; display: block; }
         .sw-sub {
@@ -159,15 +199,13 @@ export default function HomePage() {
         }
         @media (min-width: 640px) { .sw-sub { font-size: 14px; margin-top: 18px; max-width: 420px; } }
 
-        /* ── SEARCH ── */
         .sw-search-wrap { width: 100%; max-width: 560px; margin-bottom: 28px; }
         @media (min-width: 640px) { .sw-search-wrap { margin-bottom: 40px; } }
 
         .sw-search-box {
           display: flex; align-items: center; gap: 8px;
           padding: 6px 6px 6px 14px; background: #111827;
-          border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
-          transition: border-color 0.2s;
+          border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; transition: border-color 0.2s;
         }
         .sw-search-box:focus-within { border-color: #1877f2; }
         .sw-search-icon { color: rgba(255,255,255,0.2); flex-shrink: 0; }
@@ -193,7 +231,6 @@ export default function HomePage() {
         .sw-btn-label { display: none; }
         @media (min-width: 480px) { .sw-btn-label { display: inline; } }
 
-        /* ── FEATURES ── */
         .sw-features {
           width: 100%; max-width: 560px;
           display: grid; grid-template-columns: 1fr; gap: 10px;
@@ -208,9 +245,8 @@ export default function HomePage() {
         .sw-feat:hover { background: #141d2e; }
         .sw-feat-icon { color: #1877f2; margin-bottom: 10px; }
         .sw-feat-title { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-        .sw-feat-desc { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.35); line-height: 1.6; }
+        .sw-feat-desc { font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.6; }
 
-        /* ── RESULTS ── */
         .sw-results { width: 100%; max-width: 560px; }
         .sw-results-count {
           font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
@@ -267,7 +303,7 @@ export default function HomePage() {
         }
         @media (min-width: 480px) { .sw-card-title { font-size: 13px; } }
         .sw-card-channel {
-          font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.3);
+          font-size: 10px; color: rgba(255,255,255,0.3);
           margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         @media (min-width: 480px) { .sw-card-channel { font-size: 11px; margin-top: 3px; } }
@@ -293,7 +329,7 @@ export default function HomePage() {
 
         .sw-no-results {
           text-align: center; padding: 48px 0;
-          font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.2);
+          font-size: 13px; color: rgba(255,255,255,0.2);
         }
 
         .sw-footer {
